@@ -22,7 +22,6 @@ app.get('/toDos', (req, res) => {
 
 app.post('/saveToDos', (req, res) => {
   console.log('Hello from post!');
-  console.log(req);
   console.log('Req.body: ' + req.body);
   db.push('/', req.body);
   res.send(req.body.data);

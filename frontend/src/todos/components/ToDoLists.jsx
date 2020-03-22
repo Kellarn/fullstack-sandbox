@@ -10,38 +10,18 @@ import ReceiptIcon from '@material-ui/icons/Receipt';
 import Typography from '@material-ui/core/Typography';
 import { ToDoListForm } from './ToDoListForm';
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
 const getPersonalTodos = async () => {
-  // return sleep(1000).then(() =>
-  //   Promise.resolve({
-  //     '0000000001': {
-  //       id: '0000000001',
-  //       title: 'First List',
-  //       todos: ['First todo of first list!']
-  //     },
-  //     '0000000002': {
-  //       id: '0000000002',
-  //       title: 'Second List',
-  //       todos: ['First todo of second list!']
-  //     }
-  //   })
-  // );
+  return makeRequest('get', 'http://localhost:3001/todos');
+};
+
+const makeRequest = async (method, url, toDoLists = '') => {
+  console.log(toDoLists);
   try {
     let result = await axios({
-      method: 'get',
-      url: 'http://localhost:3001/toDos',
-      // headers: {
-      //   Authorization:
-      //     'Basic ' +
-      //     btoa(
-      //       process.env.REACT_APP_USERNAME +
-      //         ':' +
-      //         process.env.REACT_APP_PASSWORD
-      //     ),
-      //   'Content-type': 'application/json'
-      // },
-      mode: 'cors'
+      method: method,
+      url: url,
+      mode: 'cors',
+      data: toDoLists
     });
     console.log('saveData -> sampleRes', result);
     return result.data;
@@ -59,36 +39,7 @@ const getPersonalTodos = async () => {
 };
 
 const saveToDB = async toDoLists => {
-  console.log(toDoLists);
-  try {
-    let sampleRes = await axios({
-      method: 'post',
-      url: 'http://localhost:3001/saveToDos',
-      // headers: {
-      //   Authorization:
-      //     'Basic ' +
-      //     btoa(
-      //       process.env.REACT_APP_USERNAME +
-      //         ':' +
-      //         process.env.REACT_APP_PASSWORD
-      //     ),
-      //   'Content-type': 'application/json'
-      // },
-      mode: 'cors',
-      data: toDoLists
-    });
-    console.log('saveData -> sampleRes', sampleRes);
-  } catch (error) {
-    if (error.response) {
-      console.error(error.response.data);
-      console.error(error.response.status);
-      console.error(error.response.headers);
-    } else if (error.request) {
-      console.error(error.request);
-    } else {
-      console.error('Error', error.message);
-    }
-  }
+  makeRequest('post', 'http://localhost:3001/saveToDos', toDoLists);
 };
 
 export const ToDoLists = ({ style }) => {
@@ -100,8 +51,10 @@ export const ToDoLists = ({ style }) => {
   }, []);
 
   useEffect(() => {
-    console.log('ToDoLists were update with: ' + toDoLists);
-    if (toDoLists !== {}) saveToDB(toDoLists);
+    if (Object.keys(toDoLists).length) {
+      console.log('ToDoList updated');
+      saveToDB(toDoLists);
+    }
   }, [toDoLists]);
 
   if (!Object.keys(toDoLists).length) return null;
