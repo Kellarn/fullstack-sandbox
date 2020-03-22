@@ -1,42 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/styles';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import { Checkbox } from '@material-ui/core';
 import { TextField } from '../../shared/FormFields';
 
-export const ToDo = ({
-  toDo,
-  classes,
-  onChange,
-  onClick,
-  onChangeChecked,
-  setTodoos
-}) => {
-  const [currentToDo, setCurrentToDo] = useState({});
-  //   const [checked, setChecked] = useState(currentToDo.checked);
-  //   const [value, setValue] = useState(currentToDo.value);
+export const ToDo = ({ toDo, classes, onClick, updateToDos }) => {
+  const [currentToDo, setCurrentToDo] = useState(toDo);
 
-  //   useEffect(toDo => {
-  //     console.log(toDo);
-  //     setCurrentToDo(toDo);
-  //   }, []);
+  const handleTextChange = e => {
+    const { value } = e.target;
+    setCurrentToDo({ ...currentToDo, textValue: value });
+    updateToDos({ ...currentToDo, textValue: value });
+  };
 
-  useEffect(() => {
-    if (currentToDo !== toDo) {
-      console.log('Updated');
-      setTodoos(currentToDo);
-    }
-  }, [currentToDo, toDo, setTodoos]);
-
-  const handleInputChange = e => {
-    const { name, value } = e.target;
-    setCurrentToDo({ ...currentToDo, [name]: value });
+  const handleCheckboxChange = e => {
+    const { checked } = e.target;
+    setCurrentToDo({ ...currentToDo, checked: !checked ? false : true });
+    updateToDos({ ...currentToDo, checked: !checked ? false : true });
   };
 
   return (
@@ -46,17 +27,15 @@ export const ToDo = ({
       </Typography>
       <TextField
         label='What to do?'
-        name='textValue'
         value={currentToDo.textValue}
         key={currentToDo.index}
         tabIndex={currentToDo.index}
-        onChange={handleInputChange}
+        onChange={handleTextChange}
         className={classes.textField}
       />
       <Checkbox
-        name='checked'
         checked={currentToDo.checked}
-        onChange={onChangeChecked}
+        onChange={handleCheckboxChange}
         inputProps={{ 'aria-label': 'primary checkbox' }}
       />
       <Button

@@ -13,9 +13,11 @@ import { ToDoListForm } from './ToDoListForm';
 const getPersonalTodos = async () => {
   return makeRequest('get', 'http://localhost:3001/todos');
 };
+const saveToDB = async toDoLists => {
+  makeRequest('post', 'http://localhost:3001/saveToDos', toDoLists);
+};
 
 const makeRequest = async (method, url, toDoLists = '') => {
-  console.log(toDoLists);
   try {
     let result = await axios({
       method: method,
@@ -23,7 +25,6 @@ const makeRequest = async (method, url, toDoLists = '') => {
       mode: 'cors',
       data: toDoLists
     });
-    console.log('saveData -> sampleRes', result);
     return result.data;
   } catch (error) {
     if (error.response) {
@@ -38,10 +39,6 @@ const makeRequest = async (method, url, toDoLists = '') => {
   }
 };
 
-const saveToDB = async toDoLists => {
-  makeRequest('post', 'http://localhost:3001/saveToDos', toDoLists);
-};
-
 export const ToDoLists = ({ style }) => {
   const [toDoLists, setToDoLists] = useState({});
   const [activeList, setActiveList] = useState();
@@ -52,7 +49,6 @@ export const ToDoLists = ({ style }) => {
 
   useEffect(() => {
     if (Object.keys(toDoLists).length) {
-      console.log('ToDoList updated');
       saveToDB(toDoLists);
     }
   }, [toDoLists]);
@@ -80,7 +76,6 @@ export const ToDoLists = ({ style }) => {
           key={activeList} // use key to make React recreate component to reset internal state
           toDoList={toDoLists[activeList]}
           saveToDoList={(id, { todos }) => {
-            console.log('I am run now!');
             const listToUpdate = toDoLists[id];
             setToDoLists({
               ...toDoLists,

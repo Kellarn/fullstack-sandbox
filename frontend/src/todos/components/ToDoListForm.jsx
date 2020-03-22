@@ -4,11 +4,8 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
-import { Checkbox } from '@material-ui/core';
-import { TextField } from '../../shared/FormFields';
 import { ToDo } from './ToDo';
 
 const useStyles = makeStyles({
@@ -33,7 +30,6 @@ const useStyles = makeStyles({
 });
 
 export const ToDoListForm = ({ toDoList, saveToDoList }) => {
-  console.log('ToDoListForm -> toDoList', toDoList.todos);
   const classes = useStyles();
   const [todos, setTodos] = useState(toDoList.todos);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -48,14 +44,13 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
     saveToDoList(toDoList.id, { todos });
   };
 
-  const setTodoos = toDo => {
-    console.log('ToDoListForm -> toDo', toDo);
+  const updateToDos = toDo => {
     setTodos([
       // immutable update
       ...todos.slice(0, toDo.id - 1),
       {
         id: toDo.id,
-        textValue: toDo.value,
+        textValue: toDo.textValue,
         checked: toDo.checked
       },
       ...todos.slice(toDo.id)
@@ -79,31 +74,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
               toDo={toDo}
               classes={classes}
               key={toDo.id}
-              setTodoos={setTodoos}
-              onChange={event => {
-                setTodos([
-                  // immutable update
-                  ...todos.slice(0, toDo.id - 1),
-                  {
-                    id: toDo.id,
-                    textValue: event.target.value,
-                    checked: toDo.checked
-                  },
-                  ...todos.slice(toDo.id)
-                ]);
-              }}
-              onChangeChecked={event => {
-                setTodos([
-                  // immutable update
-                  ...todos.slice(0, toDo.id - 1),
-                  {
-                    id: toDo.id,
-                    textValue: toDo.value,
-                    checked: event.target.checked
-                  },
-                  ...todos.slice(toDo.id)
-                ]);
-              }}
+              updateToDos={updateToDos}
               onClick={() => {
                 setTodos([
                   // immutable delete
@@ -112,51 +83,6 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                 ]);
               }}
             />
-            // <div key={index} className={classes.todoLine} tabIndex={index}>
-            //   <Typography className={classes.standardSpace} variant='h6'>
-            //     {index + 1}
-            //   </Typography>
-            //   <TextField
-            //     label='What to do?'
-            //     value={toDo.value}
-            //     key={index + 1}
-            //     tabIndex={index}
-            //     onChange={event => {
-            //       console.log(event.target);
-            //       console.log('Todo: ' + toDo.id);
-            //       setTodos([
-            //         // immutable update
-            //         ...todos.slice(0, index),
-            //         {
-            //           id: toDo.id,
-            //           value: event.target.value,
-            //           checked: toDo.checked
-            //         },
-            //         ...todos.slice(index + 1)
-            //       ]);
-            //     }}
-            //     className={classes.textField}
-            //   />
-            //   <Checkbox
-            //     checked={checked}
-            //     onChange={handleChecked}
-            //     inputProps={{ 'aria-label': 'primary checkbox' }}
-            //   />
-            //   <Button
-            //     size='small'
-            //     color='secondary'
-            //     className={classes.standardSpace}
-            //     onClick={() => {
-            //       setTodos([
-            //         // immutable delete
-            //         ...todos.slice(0, index),
-            //         ...todos.slice(index + 1)
-            //       ]);
-            //     }}
-            //   >
-            //     <DeleteIcon />
-            //   </Button>
-            // </div>
           ))}
           <CardActions>
             <Button
