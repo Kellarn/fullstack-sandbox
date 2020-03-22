@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
-import { makeStyles } from '@material-ui/styles'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import CardActions from '@material-ui/core/CardActions'
-import Button from '@material-ui/core/Button'
-import DeleteIcon from '@material-ui/icons/Delete'
-import AddIcon from '@material-ui/icons/Add'
-import Typography from '@material-ui/core/Typography'
-import { TextField } from '../../shared/FormFields'
+import React, { useState, useEffect } from 'react';
+import { makeStyles } from '@material-ui/styles';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
+import Typography from '@material-ui/core/Typography';
+import { TextField } from '../../shared/FormFields';
 
 const useStyles = makeStyles({
   card: {
@@ -28,39 +28,59 @@ const useStyles = makeStyles({
     flexDirection: 'column',
     flexGrow: 1
   }
-})
+});
 
 export const ToDoListForm = ({ toDoList, saveToDoList }) => {
-  const classes = useStyles()
-  const [todos, setTodos] = useState(toDoList.todos)
+  console.log('ToDoListForm -> toDoList', toDoList);
+  const classes = useStyles();
+  const [todos, setTodos] = useState(toDoList.todos);
 
   const handleSubmit = event => {
-    event.preventDefault()
-    saveToDoList(toDoList.id, { todos })
-  }
+    event.preventDefault();
+    saveToDoList(toDoList.id, { todos });
+  };
+
+  const handleBlur = event => {
+    event.preventDefault();
+    saveToDoList(toDoList.id, { todos });
+  };
+
+  useEffect(
+    saveToDoList => {
+      console.log(todos);
+      console.log(toDoList);
+      if (todos.length !== toDoList.todos.length) {
+        saveToDoList(toDoList.id, { todos });
+      }
+    },
+    [todos, toDoList]
+  );
 
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} onBlur={handleBlur}>
       <CardContent>
-        <Typography component='h2'>
-          {toDoList.title}
-        </Typography>
+        <Typography component='h2'>{toDoList.title}</Typography>
         <form onSubmit={handleSubmit} className={classes.form}>
           {todos.map((name, index) => (
-            <div key={index} className={classes.todoLine}>
+            <div key={index} className={classes.todoLine} tabIndex={index}>
               <Typography className={classes.standardSpace} variant='h6'>
                 {index + 1}
               </Typography>
               <TextField
                 label='What to do?'
                 value={name}
+                key={index + 1}
+                tabIndex={index}
                 onChange={event => {
-                  setTodos([ // immutable update
+                  setTodos([
+                    // immutable update
                     ...todos.slice(0, index),
                     event.target.value,
                     ...todos.slice(index + 1)
-                  ])
+                  ]);
                 }}
+                onFocus={handleBlur}
+                onBlur={handleBlur}
                 className={classes.textField}
               />
               <Button
@@ -68,10 +88,11 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
                 color='secondary'
                 className={classes.standardSpace}
                 onClick={() => {
-                  setTodos([ // immutable delete
+                  setTodos([
+                    // immutable delete
                     ...todos.slice(0, index),
                     ...todos.slice(index + 1)
-                  ])
+                  ]);
                 }}
               >
                 <DeleteIcon />
@@ -83,7 +104,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
               type='button'
               color='primary'
               onClick={() => {
-                setTodos([...todos, ''])
+                setTodos([...todos, '']);
               }}
             >
               Add Todo <AddIcon />
@@ -95,5 +116,5 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
         </form>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
