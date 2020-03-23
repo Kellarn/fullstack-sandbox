@@ -9,6 +9,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ReceiptIcon from '@material-ui/icons/Receipt';
 import Typography from '@material-ui/core/Typography';
 import { ToDoListForm } from './ToDoListForm';
+import { Checkbox } from '@material-ui/core';
 
 const getPersonalTodos = async () => {
   return makeRequest('get', 'http://localhost:3001/todos');
@@ -53,6 +54,10 @@ export const ToDoLists = ({ style }) => {
     }
   }, [toDoLists]);
 
+  const checkIfComplete = key => {
+    return toDoLists[key].todos.every(todo => todo.checked === true);
+  };
+
   if (!Object.keys(toDoLists).length) return null;
   return (
     <Fragment>
@@ -66,6 +71,7 @@ export const ToDoLists = ({ style }) => {
                   <ReceiptIcon />
                 </ListItemIcon>
                 <ListItemText primary={toDoLists[key].title} />
+                <Checkbox checked={checkIfComplete(key)}></Checkbox>
               </ListItem>
             ))}
           </List>

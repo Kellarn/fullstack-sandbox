@@ -15,14 +15,11 @@ app.get('/', (req, res) => res.send('Hello World!'));
 
 app.get('/toDos', (req, res) => {
   const toDos = db.getData('/');
-  console.log('toDos', toDos);
 
   res.send(toDos);
 });
 
 app.post('/saveToDos', (req, res) => {
-  console.log('Hello from post!');
-  console.log('Req.body: ' + req.body);
   db.push('/', req.body);
   res.send(req.body.data);
 });

@@ -51,7 +51,8 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
       {
         id: toDo.id,
         textValue: toDo.textValue,
-        checked: toDo.checked
+        checked: toDo.checked,
+        date: toDo.date
       },
       ...t.slice(toDo.id)
     ]);
@@ -61,7 +62,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
     if (todos.length !== toDoList.todos.length) {
       saveToDoList(toDoList.id, { todos });
     }
-    setCurrentIndex(todos[todos.length - 1].id);
+    setCurrentIndex(todos.length ? todos[todos.length - 1].id : 0);
   }, [todos, toDoList, saveToDoList, currentIndex]);
 
   return (
@@ -91,7 +92,12 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
               onClick={() => {
                 setTodos([
                   ...todos,
-                  { id: currentIndex + 1, textValue: '', checked: false }
+                  {
+                    id: currentIndex + 1,
+                    textValue: '',
+                    checked: false,
+                    date: ''
+                  }
                 ]);
               }}
             >
