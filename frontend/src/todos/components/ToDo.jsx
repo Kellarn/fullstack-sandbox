@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Typography from '@material-ui/core/Typography';
@@ -11,17 +11,18 @@ export const ToDo = ({ toDo, classes, onClick, updateToDos }) => {
   const handleTextChange = e => {
     const { value } = e.target;
     setCurrentToDo({ ...currentToDo, textValue: value });
-    updateToDos({ ...currentToDo, textValue: value });
   };
 
   const handleCheckboxChange = e => {
     const { checked } = e.target;
     setCurrentToDo({ ...currentToDo, checked: !checked ? false : true });
-    updateToDos({ ...currentToDo, checked: !checked ? false : true });
   };
+  useEffect(() => {
+    updateToDos(currentToDo);
+  }, [currentToDo, updateToDos]);
 
   return (
-    <div key={toDo.index} className={classes.todoLine} tabIndex={toDo.index}>
+    <div key={currentToDo.index} className={classes.todoLine}>
       <Typography className={classes.standardSpace} variant='h6'>
         {toDo.index}
       </Typography>
@@ -29,7 +30,6 @@ export const ToDo = ({ toDo, classes, onClick, updateToDos }) => {
         label='What to do?'
         value={currentToDo.textValue}
         key={currentToDo.index}
-        tabIndex={currentToDo.index}
         onChange={handleTextChange}
         className={classes.textField}
       />

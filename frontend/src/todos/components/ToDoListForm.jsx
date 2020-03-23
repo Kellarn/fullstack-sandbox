@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { makeStyles } from '@material-ui/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -44,18 +44,18 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
     saveToDoList(toDoList.id, { todos });
   };
 
-  const updateToDos = toDo => {
-    setTodos([
+  const updateToDos = useCallback(toDo => {
+    setTodos(t => [
       // immutable update
-      ...todos.slice(0, toDo.id - 1),
+      ...t.slice(0, toDo.id - 1),
       {
         id: toDo.id,
         textValue: toDo.textValue,
         checked: toDo.checked
       },
-      ...todos.slice(toDo.id)
+      ...t.slice(toDo.id)
     ]);
-  };
+  }, []);
 
   useEffect(() => {
     if (todos.length !== toDoList.todos.length) {
@@ -91,7 +91,7 @@ export const ToDoListForm = ({ toDoList, saveToDoList }) => {
               onClick={() => {
                 setTodos([
                   ...todos,
-                  { id: currentIndex + 1, value: '', checked: false }
+                  { id: currentIndex + 1, textValue: '', checked: false }
                 ]);
               }}
             >
